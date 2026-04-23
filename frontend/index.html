@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Leaf Chlorosis Detection</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌿 Leaf Chlorosis Analysis System</h1>
+
+     
+      <div class="file-upload">
+        <label for="imageInput" class="upload-btn">📁 Choose Image</label>
+        <span id="fileName">No file chosen</span>
+        <input type="file" id="imageInput" accept="image/*" hidden />
+      </div>
+      <button onclick="analyzeImage()" class="btn">
+        Analyze
+      </button>
+
+      
+      <h5 id="statusText">Starting analysis...</h5>
+
+      
+      <h2 class="section-title">Results</h2>
+
+      <div class="results-grid">
+        <div class="card">
+          <span class="label">🌿 Green</span>
+          <span class="value" id="green">0</span>
+        </div>
+
+        <div class="card">
+          <span class="label">🟡 Yellow</span>
+          <span class="value" id="yellow">0</span>
+        </div>
+
+        <div class="card">
+          <span class="label">📊 Index</span>
+          <span class="value" id="index">0</span>
+        </div>
+
+        <div class="card">
+          <span class="label">⚠️ Status</span>
+          <span class="value" id="condition">-</span>
+        </div>
+
+        <div class="card wide">
+          <span class="label">💡 Tip</span>
+          <span class="value" id="recommendation">-</span>
+        </div>
+      </div>
+
+      
+      <h2>Analysis Insights</h2>
+
+      <div class="mini-loaders">
+        <div class="mini-box">
+          <div class="mini-circle" id="affectedCircle">
+            <span id="affectedVal">0</span>
+          </div>
+          <p><b>📊 Affected Area</b></p>
+        </div>
+
+        <div class="mini-box">
+          <div class="mini-circle" id="greenCircle">
+            <span id="greenVal">0</span>
+          </div>
+          <p><b>🟢 Green Ratio</b></p>
+        </div>
+
+        <div class="mini-box">
+          <div class="mini-circle" id="yellowCircle">
+            <span id="yellowVal">0</span>
+          </div>
+          <p><b>🟡 Yellow Ratio</b></p>
+        </div>
+
+        <div class="mini-box">
+          <div class="mini-circle" id="confCircle">
+            <span id="confVal">0</span>
+          </div>
+          <p><b>📍 Confidence</b></p>
+        </div>
+      </div>
+
+      
+      <button onclick="downloadPDF()">📄 Download PDF Report</button>
+
+      
+      <h2>Visualization</h2>
+
+      <div class="grid">
+        <div>
+          <p>Preview</p>
+          <img id="preview" />
+        </div>
+
+        <div>
+          <p>Segmented Leaf</p>
+          <img id="leafImg" />
+        </div>
+
+        <div>
+          <p>Yellow Regions</p>
+          <img id="yellowImg" />
+        </div>
+
+        <div>
+          <p>Overlay</p>
+          <img id="overlayImg" />
+        </div>
+
+        <div>
+          <p>Histogram</p>
+          <img id="histImg" />
+        </div>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
