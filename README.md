@@ -78,22 +78,20 @@ A sophisticated web-based application for detecting and analyzing leaf chlorosis
 ## Project Structure
 
 ```
-leaf-chlorosis-analysis/
+leaf-chlorosis-app/
 ├── backend/
-│   ├── app.py
-│   ├── image_processor.py
-│   ├── utils/
-│   └── templates/
+│   ├── __pycache__/
+│   ├── outputs/              # Generated analysis results
+│   ├── uploads/              # User-uploaded images
+│   ├── app.py                # Main Flask application
+│   └── chlorosis.py          # Image processing logic
 ├── frontend/
-│   ├── index.html
-│   ├── css/
-│   │   └── styles.css
-│   ├── js/
-│   │   └── script.js
-│   └── assets/
-├── requirements.txt
-├── config.py
-└── README.md
+│   ├── images/               # Asset images
+│   ├── index.html            # Main HTML file
+│   ├── script.js             # JavaScript functionality
+│   └── style.css             # Styling
+├── requirements.txt          # Python dependencies
+└── README.md                 # Project documentation
 ```
 
 ---
@@ -192,10 +190,10 @@ Content-Type: multipart/form-data
 
 ```python
 # Example using the system
-from backend.image_processor import analyze_leaf
+from backend.chlorosis import analyze_leaf_image
 
 # Load and analyze an image
-results = analyze_leaf('path/to/leaf/image.jpg')
+results = analyze_leaf_image('path/to/leaf/image.jpg')
 
 # Access results
 print(f"Chlorosis Index: {results['chlorosis_index']}%")
