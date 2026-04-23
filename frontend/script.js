@@ -1,16 +1,14 @@
-
 //  FILE INPUT + PREVIEW
 
 const input = document.getElementById("imageInput");
 
 input.addEventListener("change", function () {
-    const file = this.files[0];
-    if (!file) return;
+  const file = this.files[0];
+  if (!file) return;
 
-    document.getElementById("fileName").innerText = file.name;
-    document.getElementById("preview").src = URL.createObjectURL(file);
+  document.getElementById("fileName").innerText = file.name;
+  document.getElementById("preview").src = URL.createObjectURL(file);
 });
-
 
 // STATUS ANIMATION
 
@@ -19,7 +17,7 @@ function startStatusAnimation() {
     "🔍 Reading image...",
     "🌿 Detecting leaf...",
     "🟡 Detecting chlorosis...",
-    "📊 Calculating results..."
+    "📊 Calculating results...",
   ];
 
   let i = 0;
@@ -32,7 +30,6 @@ function startStatusAnimation() {
 
   return interval;
 }
-
 
 // 🚀 ANALYZE FUNCTION
 
@@ -51,7 +48,7 @@ function analyzeImage() {
     "🔍 Reading image...",
     "🌿 Detecting leaf...",
     "🟡 Detecting chlorosis...",
-    "📊 Calculating results..."
+    "📊 Calculating results...",
   ];
 
   const statusEl = document.getElementById("statusText");
@@ -72,88 +69,98 @@ function analyzeImage() {
   //  call backend
   fetch("/analyze", {
     method: "POST",
-    body: formData
+    body: formData,
   })
-  .then(res => res.json())
-  .then(data => {
-
-    //  wait until messages finish
-    const totalTime = messages.length * 900;
-
-    setTimeout(() => {
-
-      if (data.error) {
-        statusEl.innerText = "❌ " + data.error;
-        return;
-      }
-
-      statusEl.innerText = "✅ Analysis Complete";
-
-      
-      // 📊 RESULTS
-      
-      document.getElementById("green").innerText = data.green_pixels;
-      document.getElementById("yellow").innerText = data.yellow_pixels;
-      document.getElementById("index").innerText = data.index;
-      document.getElementById("condition").innerText = data.condition;
-      document.getElementById("recommendation").innerText = data.recommendation;
-
-      //  color
-      const conditionEl = document.getElementById("condition");
-      if (data.index < 0.2) conditionEl.style.color = "green";
-      else if (data.index < 0.5) conditionEl.style.color = "orange";
-      else conditionEl.style.color = "red";
-
-      
-      //  LOADERS
-      
-      const severity = Math.round(data.severity ?? data.index * 100);
-      animateLoader(severity);
+    .then((res) => res.json())
+    .then((data) => {
+      //  wait until messages finish
+      const totalTime = messages.length * 900;
 
       setTimeout(() => {
-        animateCircle("affectedCircle", "affectedVal",
-          Number(data.affected_area) || 0, "#2196f3");
-      }, 200);
+        if (data.error) {
+          statusEl.innerText = "❌ " + data.error;
+          return;
+        }
 
-      setTimeout(() => {
-        animateCircle("greenCircle", "greenVal",
-          Number(data.green_ratio) || 0, "green");
-      }, 400);
+        statusEl.innerText = "✅ Analysis Complete";
 
-      setTimeout(() => {
-        animateCircle("yellowCircle", "yellowVal",
-          Number(data.yellow_ratio) || 0, "orange");
-      }, 600);
+        // 📊 RESULTS
 
-      setTimeout(() => {
-        animateCircle("confCircle", "confVal",
-          Number(data.confidence) || 0, "purple");
-      }, 800);
+        document.getElementById("green").innerText = data.green_pixels;
+        document.getElementById("yellow").innerText = data.yellow_pixels;
+        document.getElementById("index").innerText = data.index;
+        document.getElementById("condition").innerText = data.condition;
+        document.getElementById("recommendation").innerText =
+          data.recommendation;
 
-     
-      //  IMAGES
-      
-      document.getElementById("leafImg").src =
-        "http://127.0.0.1:5000/" + data.leaf_img;
+        //  color
+        const conditionEl = document.getElementById("condition");
+        if (data.index < 0.2) conditionEl.style.color = "green";
+        else if (data.index < 0.5) conditionEl.style.color = "orange";
+        else conditionEl.style.color = "red";
 
-      document.getElementById("yellowImg").src =
-        "http://127.0.0.1:5000/" + data.yellow_img;
+        //  LOADERS
 
-      document.getElementById("overlayImg").src =
-        "http://127.0.0.1:5000/" + data.overlay_img;
+        const severity = Math.round(data.severity ?? data.index * 100);
+        animateLoader(severity);
 
-      document.getElementById("histImg").src =
-        "http://127.0.0.1:5000/" + data.hist_img;
+        setTimeout(() => {
+          animateCircle(
+            "affectedCircle",
+            "affectedVal",
+            Number(data.affected_area) || 0,
+            "#2196f3",
+          );
+        }, 200);
 
-    }, totalTime);
+        setTimeout(() => {
+          animateCircle(
+            "greenCircle",
+            "greenVal",
+            Number(data.green_ratio) || 0,
+            "green",
+          );
+        }, 400);
 
-  })
-  .catch(err => {
-    statusEl.innerText = "❌ Backend Error";
-    console.error(err);
-  });
+        setTimeout(() => {
+          animateCircle(
+            "yellowCircle",
+            "yellowVal",
+            Number(data.yellow_ratio) || 0,
+            "orange",
+          );
+        }, 600);
+
+        setTimeout(() => {
+          animateCircle(
+            "confCircle",
+            "confVal",
+            Number(data.confidence) || 0,
+            "purple",
+          );
+        }, 800);
+
+        //  IMAGES
+
+        
+        document.getElementById("leafImg").src =
+          data.leaf_img + "?t=" + Date.now();
+
+        document.getElementById("yellowImg").src =
+          data.yellow_img + "?t=" + Date.now();
+
+        document.getElementById("overlayImg").src =
+          data.overlay_img + "?t=" + Date.now();
+
+        document.getElementById("histImg").src =
+          data.hist_img + "?t=" + Date.now();
+      }, totalTime);
+    })
+    .catch((err) => {
+      statusEl.innerText = "❌ Backend Error";
+      console.error(err);
+    });
 }
-
 
 // 🎯 MAIN LOADER
 
@@ -172,16 +179,11 @@ function animateLoader(target) {
     current++;
     text.innerText = current + "%";
 
-    const color =
-      current >= 50 ? "red" :
-      current >= 20 ? "orange" : "green";
+    const color = current >= 50 ? "red" : current >= 20 ? "orange" : "green";
 
-    circle.style.background =
-      `conic-gradient(${color} ${current * 3.6}deg, #ddd 0deg)`;
-
+    circle.style.background = `conic-gradient(${color} ${current * 3.6}deg, #ddd 0deg)`;
   }, 15);
 }
-
 
 // 🔥 MINI LOADER
 
@@ -204,13 +206,9 @@ function animateCircle(circleId, textId, target, color) {
     current++;
     text.innerText = current + "%";
 
-    circle.style.background =
-      `conic-gradient(${color} ${current * 3.6}deg, #ddd 0deg)`;
-
+    circle.style.background = `conic-gradient(${color} ${current * 3.6}deg, #ddd 0deg)`;
   }, 15);
 }
-
-
 
 async function downloadPDF() {
   const { jsPDF } = window.jspdf;
@@ -243,12 +241,10 @@ async function downloadPDF() {
   doc.text(`Yellow Pixels: ${yellow}`, 20, 50);
   doc.text(`Index: ${index}`, 20, 60);
   doc.text(`Condition: ${condition}`, 20, 70);
-  
 
   doc.text("Recommendation:", 20, 95);
   doc.text(recommendation, 20, 105, { maxWidth: 170 });
 
-  
   function loadImage(img) {
     return new Promise((resolve) => {
       if (!img.src) return resolve(null);
@@ -262,7 +258,6 @@ async function downloadPDF() {
     });
   }
 
-  
   const leafImg = await loadImage(document.getElementById("leafImg"));
   const overlayImg = await loadImage(document.getElementById("overlayImg"));
   const histImg = await loadImage(document.getElementById("histImg"));
@@ -284,6 +279,5 @@ async function downloadPDF() {
     doc.text("Histogram", 145, y + 55);
   }
 
-  
   doc.save("chlorosis_report.pdf");
 }
